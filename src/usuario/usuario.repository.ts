@@ -16,6 +16,6 @@ export class UsuarioRepository {
       (usuario) => usuario.email === email,
     );
 
-    return possivelUsuario !== undefined;
+    return possivelUsuario !== undefined; //se email for diferente de undefined ele retorna true(existe), se for undefined ele retorna false(não existe)
   }
 }
