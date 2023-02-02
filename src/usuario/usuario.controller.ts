@@ -61,7 +61,7 @@ export class UsuarioController {
     };
   }
 
-  @Delete('/id')
+  @Delete('/:id')
   async removeUsuario(@Param('id') id: string) {
     console.log('chegou controller');
     const usuarioRemovido = await this.usuarioRepository.remove(id);
