@@ -39,10 +39,10 @@ export class UsuarioController {
   @Get()
   async listaUsuarios() {
     const usuariosSalvos = await this.usuarioRepository.listar();
-    const usuariosLista = usuariosSalvos.map(
+    /* const usuariosLista = usuariosSalvos.map(
       (usuario) => new listaUsuarioDTO(usuario.id, usuario.nome),
-    );
-    return usuariosLista;
+    ); */
+    return usuariosSalvos;
   }
 
   @Put('/:id')
