@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { empty } from 'rxjs';
 import { UsuarioEntity } from './usuario.entity';
 
 var AWS = require('aws-sdk');
@@ -16,7 +17,7 @@ export class UsuarioRepository {
     //this.usuarios.push(usuario);
 
     var params = {
-      TableName: 'Table_Test',
+      TableName: 'TableTest',
       Item: {
         id: 'user',
         sk: usuario.email,
@@ -35,16 +36,27 @@ export class UsuarioRepository {
   }
 
   async existeComEmail(email: string) {
-    const possivelUsuario = ddbClient.find(
+    /* const possivelUsuario = ddbClient.find(
       (usuario) => usuario.email === email,
-    );
+    ); */
 
-    return possivelUsuario !== undefined; //se email for diferente de undefined ele retorna true(existe), se for undefined ele retorna false(não existe)
+    let params = {
+      TableName: 'TableTest',
+      KeyConditionExpression: 'id = :p and sk = :email',
+      ExpressionAttributeValues: {
+        ':p': 'user',
+        ':email': email,
+      },
+      ProjectionExpression: 'sk, nome',
+    };
+    const result = await ddbClient.query(params).promise();
+
+    return result.Items !== undefined; //se email for diferente de undefined ele retorna true(existe), se for undefined ele retorna false(não existe)
   }
 
   async listar() {
     let params = {
-      TableName: 'Table_test',
+      TableName: 'TableTest',
       KeyConditionExpression: 'id = :p',
       ExpressionAttributeValues: {
         ':p': 'user',
@@ -56,7 +68,7 @@ export class UsuarioRepository {
 
   async buscaPorId(email: string) {
     let params = {
-      TableName: 'Table_test',
+      TableName: 'TableTest',
       KeyConditionExpression: 'id = :p and sk = :email',
       ExpressionAttributeValues: {
         ':p': 'user',
