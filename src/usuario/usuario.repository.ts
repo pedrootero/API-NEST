@@ -21,12 +21,12 @@ export class UsuarioRepository {
       Item: {
         id: 'user',
         sk: usuario.email,
-        user: usuario.nome,
+        username: usuario.nome,
         passwd: usuario.senha,
       },
     };
 
-    ddbClient.putItem(params, function (err, data) {
+    ddbClient.put(params, function (err, data) {
       if (err) {
         console.log('Error', err);
       } else {
@@ -36,10 +36,6 @@ export class UsuarioRepository {
   }
 
   async existeComEmail(email: string) {
-    /* const possivelUsuario = ddbClient.find(
-      (usuario) => usuario.email === email,
-    ); */
-
     let params = {
       TableName: 'TableTest',
       KeyConditionExpression: 'id = :p and sk = :email',
@@ -50,8 +46,9 @@ export class UsuarioRepository {
       ProjectionExpression: 'sk, nome',
     };
     const result = await ddbClient.query(params).promise();
+    console.log(result);
 
-    return result.Items !== undefined; //se email for diferente de undefined ele retorna true(existe), se for undefined ele retorna false(não existe)
+    return result.Count > 0; //se email for diferente de undefined ele retorna true(existe), se for undefined ele retorna false(não existe)
   }
 
   async listar() {
@@ -61,9 +58,9 @@ export class UsuarioRepository {
       ExpressionAttributeValues: {
         ':p': 'user',
       },
-      ProjectionExpression: 'sk, nome',
+      ProjectionExpression: 'sk, username',
     };
-    const result = await ddbClient.query(params).promise();
+    return await ddbClient.query(params).promise();
   }
 
   async buscaPorId(email: string) {
@@ -74,7 +71,7 @@ export class UsuarioRepository {
         ':p': 'user',
         ':email': email,
       },
-      ProjectionExpression: 'sk, nome',
+      ProjectionExpression: 'sk, username',
     };
     const result = await ddbClient.query(params).promise();
 
@@ -82,33 +79,58 @@ export class UsuarioRepository {
       throw new Error('Usuario não existe');
     }
 
-    return result.Items;
+    return result.Items[0];
   }
 
-  async atualiza(id: string, dadosDeAtualizacao: Partial<UsuarioEntity>) {
-    const usuario = this.buscaPorId(id);
+  async atualiza(email: string, dadosDeAtualizacao: Partial<UsuarioEntity>) {
+    const usuario = this.buscaPorId(email);
+    if (usuario) {
+      let params = {
+        TableName: 'TableTest',
+        Key: {
+          id: 'user',
+          sk: email,
+        },
+        UpdateExpression: 'SET passwd = :p, username = :username',
+        ConditionExpression: 'attribute_exists(sk)',
+        ExpressionAttributeValues: {
+          ':username': dadosDeAtualizacao.nome,
+          ':p': dadosDeAtualizacao.senha,
+        },
+        //ProjectionExpression: 'sk, user',
+      };
 
-    Object.entries(dadosDeAtualizacao).forEach(([chave, valor]) => {
-      if (chave === 'id') {
-        return;
-      }
+      const result = ddbClient.update(params, function (err, data) {
+        if (err) {
+          console.log('Error', err);
+        } else {
+          console.log('Success', data);
+        }
+      });
 
-      usuario[chave] = valor;
-    });
-
-    return usuario;
+      return result;
+    } else {
+      throw new Error('Usuario não existe');
+    }
   }
 
-  async remove(id: string) {
-    console.log('chegou aqui 1');
-    const usuario = this.buscaPorId(id);
+  async remove(email: string) {
+    const usuario = this.buscaPorId(email);
     console.log(usuario);
 
-    // this.usuarios = this.usuarios.indexOf(id);
-    this.usuarios = this.usuarios.filter(
-      (usuarioSalvo) => usuarioSalvo.id !== id,
-    );
-    console.log('chegou aqui');
-    return usuario;
+    if (usuario) {
+      let params = {
+        TableName: 'TableTest',
+        Key: {
+          id: 'user',
+          sk: email,
+        },
+      };
+
+      const delecao = ddbClient.delete(params).promise();
+      return delecao;
+    } else {
+      throw new Error('Usuario não existe');
+    }
   }
 }

@@ -39,10 +39,8 @@ export class UsuarioController {
   @Get()
   async listaUsuarios() {
     const usuariosSalvos = await this.usuarioRepository.listar();
-    /* const usuariosLista = usuariosSalvos.map(
-      (usuario) => new listaUsuarioDTO(usuario.id, usuario.nome),
-    ); */
-    return usuariosSalvos;
+
+    return usuariosSalvos.Items;
   }
 
   @Put('/:id')
@@ -56,18 +54,21 @@ export class UsuarioController {
     );
 
     return {
-      usuario: usuarioAtualizado,
       message: 'usuário atualizado com sucesso!',
     };
   }
 
   @Delete('/:id')
   async removeUsuario(@Param('id') id: string) {
-    console.log('chegou controller');
-    const usuarioRemovido = await this.usuarioRepository.remove(id);
+    try {
+      const usuarioRemovido = await this.usuarioRepository.remove(id);
+    } catch (error) {
+      console.error(error);
+
+      throw new Error(error);
+    }
 
     return {
-      usuario: usuarioRemovido,
       message: 'usuario removido com sucesso',
     };
   }
