@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { AuthService } from 'src/auth/auth.service';
 import { CriaUsuarioDTO } from './dto/CriaUsuario.dto';
 import { UsuarioEntity } from './usuario.entity';
 
@@ -12,11 +14,15 @@ const ddbClient = new AWS.DynamoDB.DocumentClient();
 //var ddb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
 @Injectable()
 export class UsuarioRepository {
-  //private usuarios: UsuarioEntity[] = [];
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly authService: AuthService,
+  ) {}
 
   async salvar(usuario: CriaUsuarioDTO) {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(usuario.senha, salt);
+    const token = this.authService.createToken(usuario);
 
     var params = {
       TableName: 'TableTest',

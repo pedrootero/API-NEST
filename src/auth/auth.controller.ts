@@ -4,11 +4,11 @@ import { UsuarioRepository } from '../usuario/usuario.repository';
 import { AuthService } from './auth.service';
 import { AuthForgetDTO } from './dto/auth-forget.dto';
 import { AuthLoginDto } from './dto/auth-login.dto';
-import { AuthResetDTO } from './dto/auth-reset.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(
+    //@Inject(forwardRef(() => UsuarioRepository))
     private readonly userRepository: UsuarioRepository,
     private readonly authService: AuthService,
   ) {}
@@ -23,7 +23,7 @@ export class AuthController {
 
     return {
       usuario: dadosUsuario.nome,
-      message: 'usuario criado com sucesso',
+      message: 'usuario criado com sucesso!',
     };
   }
 
@@ -32,8 +32,8 @@ export class AuthController {
     return this.authService.forget(email);
   }
 
-  @Post('reset')
-  async reset(@Body() { password, token, novosDados }: AuthResetDTO) {
-    return this.authService.reset(password, token, novosDados);
+  @Post('me')
+  async me(@Body() body) {
+    return this.authService.checkToken(body.token);
   }
 }
