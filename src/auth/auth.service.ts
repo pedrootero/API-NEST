@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsuarioRepository } from '../usuario/usuario.repository';
@@ -46,15 +46,23 @@ export class AuthService {
     } catch (error) {}
   }
 
-  async forget(email) {}
+  async forget(email) {
+    const user = await this.usuarioRepository.buscaPorId(email);
 
-  async reset(email, novosDados) {
-    //TO DO Validar o token
+    if (!user.email) {
+      throw new UnauthorizedException('E-mail está incorreto.');
+    }
+    //TO DO enviar o email
+    return true;
+  }
+
+  async reset(email, token, novosDados) {
+    //TO DO Validar o token se for valido atualiza dados
 
     const id = 0;
 
     const user = await this.usuarioRepository.atualiza(email, novosDados);
 
-    return this.createToken(user);
+    return true;
   }
 }

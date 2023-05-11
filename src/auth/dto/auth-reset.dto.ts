@@ -7,4 +7,6 @@ export class AuthResetDTO {
 
   @IsJWT()
   token: String;
+
+  novosDados: Object;
 }
