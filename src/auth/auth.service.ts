@@ -1,12 +1,13 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { UsuarioRepository } from '../usuario/usuario.repository';
+import { UsuarioRepository } from 'src/usuario/usuario.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
+    //@Inject(forwardRef(() => UsuarioModule))
     private usuarioRepository: UsuarioRepository,
   ) {}
 
@@ -15,37 +16,45 @@ export class AuthService {
 
     return this.jwtService.sign(
       {
-        sub: usuario.id,
-        name: usuario.nome,
-        email: usuario.email,
+        name: usuario.username,
+        email: usuario.sk,
       },
       {
         expiresIn: '1 day',
-        subject: String(usuario.id),
-        issuer: 'API',
+        issuer: 'login',
         audience: 'user',
       },
     );
   }
 
   async checkToken(token: string) {
-    return this.jwtService.verify(token, {
-      audience: 'user',
-      issuer: 'API',
-    });
+    try {
+      const data = this.jwtService.verify(token, {
+        audience: 'user',
+        issuer: 'login',
+      });
+      return data;
+    } catch (error) {}
   }
 
   async login(email: string, password: string) {
     try {
       const user = await this.usuarioRepository.buscaPorId(email);
-      const salt = bcrypt.genSaltSync(10);
-      const hash = bcrypt.hashSync(password, salt);
-      const match = await bcrypt.compare(user.senha, hash);
 
-      if (!user.email || match == false) {
+      console.log(user);
+
+      const match = await bcrypt.compare(password, user.passwd);
+      console.log({ match });
+      if (!user.sk || match == false) {
         return false;
       }
-      this.createToken(user);
+      const token = await this.createToken(user);
+
+      console.log(token);
+
+      user[token] = token;
+
+      return token;
     } catch (error) {}
   }
 

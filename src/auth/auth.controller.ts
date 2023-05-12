@@ -8,13 +8,12 @@ import { AuthLoginDto } from './dto/auth-login.dto';
 @Controller('auth')
 export class AuthController {
   constructor(
-    //@Inject(forwardRef(() => UsuarioRepository))
     private readonly userRepository: UsuarioRepository,
     private readonly authService: AuthService,
   ) {}
   @Post('login')
   async login(@Body() { email, password }: AuthLoginDto) {
-    return this.authService.login(email, password);
+    return await this.authService.login(email, password);
   }
 
   @Post('register')

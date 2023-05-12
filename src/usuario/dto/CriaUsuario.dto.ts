@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
 import { EmailEhUnico } from '../validacao/email-eh-unico.validator';
 
 export class CriaUsuarioDTO {
@@ -11,7 +11,4 @@ export class CriaUsuarioDTO {
 
   @MinLength(6, { message: 'Senha precisa ter no minimo 6 caracteres' })
   senha: string;
-
-  @IsString()
-  token: String;
 }

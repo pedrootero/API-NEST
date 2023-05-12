@@ -6,12 +6,13 @@ import { AuthService } from './auth.service';
 
 @Module({
   imports: [
-    //forwardRef(() => UsuarioModule),
+    // forwardRef(() => UsuarioModule),
     JwtModule.register({
       secret: '$b6OMHlHehM35xy1qlaPJH2onLxT5*CI',
     }),
   ],
   providers: [AuthService, UsuarioRepository],
   controllers: [AuthController],
+  exports: [AuthService],
 })
 export class AuthModule {}
