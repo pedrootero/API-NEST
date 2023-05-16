@@ -11,7 +11,7 @@ export class AuthService {
     private usuarioRepository: UsuarioRepository,
   ) {}
 
-  async createToken(usuario) {
+  createToken(usuario) {
     console.log(usuario);
 
     return this.jwtService.sign(
@@ -27,7 +27,7 @@ export class AuthService {
     );
   }
 
-  async checkToken(token: string) {
+  checkToken(token: string) {
     try {
       const data = this.jwtService.verify(token, {
         audience: 'user',
@@ -35,6 +35,15 @@ export class AuthService {
       });
       return data;
     } catch (error) {}
+  }
+
+  isValidToken(token: string) {
+    try {
+      this.checkToken(token);
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   async login(email: string, password: string) {

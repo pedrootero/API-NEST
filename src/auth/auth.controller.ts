@@ -1,4 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { AuthGuard } from 'src/guards/auth.guard';
 import { CriaUsuarioDTO } from '../usuario/dto/CriaUsuario.dto';
 import { UsuarioRepository } from '../usuario/usuario.repository';
 import { AuthService } from './auth.service';
@@ -31,8 +32,9 @@ export class AuthController {
     return this.authService.forget(email);
   }
 
+  @UseGuards(AuthGuard)
   @Post('me')
-  async me(@Body() body) {
-    return this.authService.checkToken(body.token);
+  async me(@Req() req) {
+    return { me: 'ok', data: req.tokenPayload };
   }
 }
