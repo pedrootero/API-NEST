@@ -20,7 +20,7 @@ export class AuthService {
         email: usuario.sk,
       },
       {
-        expiresIn: '1 day',
+        expiresIn: 120,
         issuer: 'login',
         audience: 'user',
       },

@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class JWTGuard implements CanActivate {
   constructor(private readonly authService: AuthService) {}
 
   canActivate(context: ExecutionContext) {
@@ -17,11 +17,14 @@ export class AuthGuard implements CanActivate {
       );
 
       console.log('data: ', data);
+      //const now = ~~(new Date().getTime() / 1000); // ~~ arredonda para inteiro
+      if (data) {
+        request.tokenPayload = data;
+        console.log('requestPayload: ', request.tokenPayload);
 
-      request.tokenPayload = data;
-      console.log('requestPayload: ', request.tokenPayload);
-
-      return true;
+        return true;
+      }
+      return false;
     } catch (error) {
       return false;
     }

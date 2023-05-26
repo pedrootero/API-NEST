@@ -1,5 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
-import { AuthGuard } from 'src/guards/auth.guard';
+import { Body, Controller, Post, Req } from '@nestjs/common';
 import { CriaUsuarioDTO } from '../usuario/dto/CriaUsuario.dto';
 import { UsuarioRepository } from '../usuario/usuario.repository';
 import { AuthService } from './auth.service';
@@ -32,7 +31,7 @@ export class AuthController {
     return this.authService.forget(email);
   }
 
-  @UseGuards(AuthGuard)
+  //@UseGuards(JWTGuard)
   @Post('me')
   async me(@Req() req) {
     return { me: 'ok', data: req.tokenPayload };
