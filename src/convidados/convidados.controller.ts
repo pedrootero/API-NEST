@@ -19,7 +19,7 @@ export class ConvidadosController {
 
     return {
       convidados: dadosDoConvidado.nome,
-      message: 'Convidados cadastrado com sucesso',
+      message: 'Convites enviados sucesso',
     };
   }
 

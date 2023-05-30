@@ -2,10 +2,10 @@ import { IsArray, IsString } from 'class-validator';
 
 export class CriaConvidadoDTO {
   @IsArray()
-  nome: String[];
+  nome: string[];
 
   @IsArray()
-  cel: String[];
+  cel: string[];
 
   @IsString()
   evento: String;
