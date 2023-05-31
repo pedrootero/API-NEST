@@ -1,8 +1,5 @@
 import { Module } from '@nestjs/common';
 import { SnsModule } from 'nest-sns';
-import { ConvidadosModule } from 'src/convidados/convidados.module';
-import { ConvidadosService } from 'src/convidados/convidados.service';
-import { SendSMS } from './sms.service';
 
 @Module({
   imports: [
@@ -12,10 +9,9 @@ import { SendSMS } from './sms.service';
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
       },
     }),
-    ConvidadosModule,
   ],
-  //controllers: [SeuController],
-  providers: [SendSMS, ConvidadosService],
-  exports: [SendSMS],
+
+  providers: [SendMsg],
+  exports: [SendMsg],
 })
-export class SmsModule {}
+export class SendMsg {}

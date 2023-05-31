@@ -1,9 +1,17 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Injectable,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { JWTGuard } from 'src/guards/auth.guard';
 import { ConvidadosRepository } from './convidados.respository';
 import { ConvidadosService } from './convidados.service';
 import { CriaConvidadoDTO } from './dto/criaConvidados';
 
+@Injectable()
 @Controller('/convidados')
 export class ConvidadosController {
   constructor(

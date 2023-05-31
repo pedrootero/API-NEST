@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
 import { SmsService, SnsService } from 'nest-sns';
 
-@Injectable()
-export class SendSMS {
-  constructor(private snsService: SnsService, private smsService: SmsService) {}
+export class SendMsg {
+  private snsService = new SnsService();
+  private smsService = new SmsService();
+
+  constructor() {}
 
   async sendSms(cel, nome, evento) {
     const smsOptions = {

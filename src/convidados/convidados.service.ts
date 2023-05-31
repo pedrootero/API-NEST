@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { SendSMS } from 'src/sms/sms.service';
+import { SendMsg } from 'src/sms/sms.service';
 import { ConvidadosRepository } from './convidados.respository';
 import { CriaConvidadoDTO } from './dto/criaConvidados';
 
@@ -8,7 +8,8 @@ import { CriaConvidadoDTO } from './dto/criaConvidados';
 export class ConvidadosService {
   constructor(
     private convidadosRepository: ConvidadosRepository,
-    private sendSms: SendSMS,
+
+    private sendSms: SendMsg,
   ) {}
 
   async postConvidados(dadosConvidados: CriaConvidadoDTO) {
